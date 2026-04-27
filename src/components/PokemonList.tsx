@@ -154,58 +154,67 @@ export default function PokemonList() {
       ) : (
         <div className="grid w-full lg:grid-cols-6 md:grid-cols-3 grid-cols-1 gap-4 ">
           {pokemon.map((poke) => (
-            <Card
-              key={poke.id}
-              className={`w-full max-w-xs text-white`}
-              style={{
-                background: `linear-gradient(135deg, ${getColorsByType(
-                  poke.types[0].type.name,
-                )}, ${poke.types[1]?.type.name !== undefined ? getColorsByType(poke?.types[1]?.type.name) : "lightgray"})`,
-                borderColor: "lightgrey",
-                // borderImage: `linear-gradient(135deg, ${getColorsByType(poke?.types[0]?.type.name)}, ${getColorsByType(poke?.types[0]?.type.name)}) 1`,
-              }}
+            <Button
+              className="w-full h-full"
+              variant={"ghost"}
+              size={"normal"}
+              asChild
             >
-              <CardHeader className="flex justify-between">
-                <div>
-                  <CardTitle>{poke.name.toUpperCase()}</CardTitle>
-                  <CardDescription>#{poke.id}</CardDescription>
-                </div>
-                <CardAction>
-                  <div className="flex gap-1 flex-wrap ml-8">
-                    {poke.types.map((type: { type: { name: string } }) => (
-                      <Badge
-                        key={type.type.name}
-                        style={{
-                          backgroundColor: getColorsByType(type.type.name),
-                        }}
-                      >
-                        {type.type.name.toUpperCase()}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardAction>
-              </CardHeader>
-              <CardContent className="flex justify-center">
-                {poke.sprites.front_default && (
-                  <img
-                    width={150}
-                    height={150}
-                    src={poke.sprites.front_default}
-                    alt={poke.name}
-                  />
-                )}
-              </CardContent>
-              <CardFooter>
-                <div className="flex justify-between w-full">
-                  <div className=" p-1 rounded">
-                    <strong>Height:</strong> {poke.height}
-                  </div>
-                  <div className=" p-1 rounded">
-                    <strong>Weight:</strong> {poke.weight}
-                  </div>
-                </div>
-              </CardFooter>
-            </Card>
+              <a href={`/pokedex/${poke.name}`}>
+                <Card
+                  key={poke.id}
+                  className={`w-full max-w-xs text-white`}
+                  style={{
+                    background: `linear-gradient(135deg, ${getColorsByType(
+                      poke.types[0].type.name,
+                    )}, ${poke.types[1]?.type.name !== undefined ? getColorsByType(poke?.types[1]?.type.name) : "lightgray"})`,
+                    borderColor: "lightgrey",
+                    // borderImage: `linear-gradient(135deg, ${getColorsByType(poke?.types[0]?.type.name)}, ${getColorsByType(poke?.types[0]?.type.name)}) 1`,
+                  }}
+                >
+                  <CardHeader className="flex justify-between">
+                    <div>
+                      <CardTitle>{poke.name.toUpperCase()}</CardTitle>
+                      <CardDescription>#{poke.id}</CardDescription>
+                    </div>
+                    <CardAction>
+                      <div className="flex gap-1 flex-wrap ml-8">
+                        {poke.types.map((type: { type: { name: string } }) => (
+                          <Badge
+                            key={type.type.name}
+                            style={{
+                              backgroundColor: getColorsByType(type.type.name),
+                            }}
+                          >
+                            {type.type.name.toUpperCase()}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CardAction>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    {poke.sprites.front_default && (
+                      <img
+                        width={150}
+                        height={150}
+                        src={poke.sprites.front_default}
+                        alt={poke.name}
+                      />
+                    )}
+                  </CardContent>
+                  <CardFooter>
+                    <div className="flex justify-between w-full">
+                      <div className=" p-1 rounded">
+                        <strong>Height:</strong> {poke.height}
+                      </div>
+                      <div className=" p-1 rounded">
+                        <strong>Weight:</strong> {poke.weight}
+                      </div>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </a>
+            </Button>
           ))}
         </div>
       )}
