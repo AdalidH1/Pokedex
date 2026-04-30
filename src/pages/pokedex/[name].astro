@@ -54,6 +54,25 @@ const abilities = await Promise.all(
   }),
 );
 
+const moves = await Promise.all(
+  data.moves.map(async (move) => {
+    const res = await fetch(move.move.url);
+    const moveData = await res.json();
+    return {
+      name: move.move.name,
+      accuracy: moveData.accuracy,
+      pp: moveData.pp,
+      power: moveData.power,
+      priority: moveData.priority,
+      type: moveData.type.name,
+      description:
+        moveData.effect_entries.find(
+          (e: { language: { name: string } }) => e.language.name === "en",
+        )?.effect || "No description",
+    };
+  }),
+);
+
 // 1. Obtener species
 const speciesRes = await fetch(data.species.url);
 const speciesData = await speciesRes.json();
@@ -115,6 +134,7 @@ const evolutions = getAllEvolutions(evoData.chain);
         {
           data.sprites.front_default && (
             <Image
+              loading={"eager"}
               width={500}
               height={500}
               class={"-mt-40"}
@@ -179,40 +199,70 @@ const evolutions = getAllEvolutions(evoData.chain);
         </div>
       </CardFooter>
     </Card>
+    <div class="col-span-2 flex gap-2">
+      <Card className="h-fit w-full">
+        <CardHeader>
+          <CardTitle> Abilities </CardTitle>
+          <CardDescription />
+          <CardAction className="flex gap-2" />
+        </CardHeader>
+        <CardContent>
+          {
+            abilities.map((ability) => (
+              <div>
+                <Card className="border-none shadow-none mb-2 bg-accent">
+                  <CardHeader>
+                    <CardTitle className="text-gray-700 capitalize">
+                      {ability.name.split("-").join(" ")}
+                    </CardTitle>
+                    <CardDescription className="text-gray-500 line-clamp-2 hover:line-clamp-none transition-all">
+                      {ability.description}
+                    </CardDescription>
+                    <CardAction>
+                      {ability.is_hidden ? (
+                        <Badge variant={"outline"}>HIDDEN</Badge>
+                      ) : (
+                        ""
+                      )}
+                    </CardAction>
+                  </CardHeader>
+                </Card>
+              </div>
+            ))
+          }
+        </CardContent>
+        <CardFooter />
+      </Card>
 
-    <Card className="h-fit">
-      <CardHeader>
-        <CardTitle> Abilities </CardTitle>
-        <CardDescription />
-        <CardAction className="flex gap-2" />
-      </CardHeader>
-      <CardContent>
-        {
-          abilities.map((ability) => (
-            <div>
-              <Card className="border-none shadow-none mb-2 bg-accent">
-                <CardHeader>
-                  <CardTitle className="text-gray-700 capitalize">
-                    {ability.name.split("-").join(" ")}
-                  </CardTitle>
-                  <CardDescription className="text-gray-500 line-clamp-2 hover:line-clamp-none transition-all">
-                    {ability.description}
-                  </CardDescription>
-                  <CardAction>
-                    {ability.is_hidden ? (
-                      <Badge variant={"outline"}>HIDDEN</Badge>
-                    ) : (
-                      ""
-                    )}
-                  </CardAction>
-                </CardHeader>
-              </Card>
-            </div>
-          ))
-        }
-      </CardContent>
-      <CardFooter />
-    </Card>
+      <Card className="h-fit w-full">
+        <CardHeader>
+          <CardTitle> Moves </CardTitle>
+          <CardDescription />
+          <CardAction className="flex gap-2" />
+        </CardHeader>
+        <CardContent>
+          {
+            moves.map((move) => (
+              <div>
+                <Card className="border-none shadow-none mb-2 bg-accent">
+                  <CardHeader>
+                    <CardTitle className="text-gray-700 capitalize">
+                      {move.name.split("-").join(" ")}
+                    </CardTitle>
+                    <CardDescription className="text-gray-500 line-clamp-2 hover:line-clamp-none transition-all">
+                      {move.description}
+                    </CardDescription>
+                    <CardAction>{move.type}</CardAction>
+                  </CardHeader>
+                </Card>
+              </div>
+            ))
+          }
+        </CardContent>
+        <CardFooter />
+      </Card>
+    </div>
+
     <Card className="">
       <CardHeader>
         <CardTitle> Evolution Chain </CardTitle>
@@ -227,6 +277,7 @@ const evolutions = getAllEvolutions(evoData.chain);
                 <a href={`/pokedex/${name}`} data-astro-prefetch>
                   <div class="flex flex-col items-center">
                     <Image
+                      loading={"eager"}
                       height={200}
                       width={200}
                       alt={name}
