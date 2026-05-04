@@ -23,7 +23,6 @@ import { Skeleton } from "./ui/skeleton";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import getToggleVariants from "@/helper/ToggleVariants";
 import { Button } from "./ui/button";
-import { Eye, Info, Link } from "lucide-react";
 import type { Pokemon } from "@/types/pokemon";
 
 const LIMIT = 24;
@@ -139,7 +138,7 @@ export default function PokemonList() {
       )}
       {loading ? (
         <div className="grid w-full lg:grid-cols-6 md:grid-cols-3 grid-cols-1 gap-4">
-          {Array.from({ length: 20 }).map((_, i) => (
+          {Array.from({ length: 24 }).map((_, i) => (
             <Card className="w-full max-w-xs">
               <CardHeader>
                 <Skeleton className="h-4" />
@@ -220,7 +219,7 @@ export default function PokemonList() {
         </div>
       )}
 
-      <Pagination className="mt-2">
+      <Pagination className="mt-10">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious

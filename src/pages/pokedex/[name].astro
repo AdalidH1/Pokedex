@@ -18,6 +18,7 @@ import { Progress } from "@/components/ui/progress";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { ArrowLeft } from "lucide-react";
 
 export async function getStaticPaths() {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100000");
@@ -55,7 +56,7 @@ const abilities = await Promise.all(
 );
 
 const moves = await Promise.all(
-  data.moves.map(async (move) => {
+  data.moves.slice(0, 3).map(async (move) => {
     const res = await fetch(move.move.url);
     const moveData = await res.json();
     return {
@@ -97,207 +98,218 @@ const evolutions = getAllEvolutions(evoData.chain);
 ---
 
 <Layout>
-  <div class="grid grid-cols-3 w-full justify-between gap-4">
-    <Card
-      className={`col-span-2 text-white`}
-      style={{
-        background: `linear-gradient(135deg, ${getColorsByType(
-          poke.types[0].type.name,
-        )}, ${poke.types[1]?.type.name !== undefined ? getColorsByType(poke?.types[1]?.type.name) : "lightgray"})`,
-        borderColor: "lightgrey",
-      }}
-    >
-      <CardHeader>
-        <CardTitle className="text-8xl text-transparent text-shadow-2xs"
-          >#{data.id}</CardTitle
-        >
-        <CardDescription className="text-xl text-shadow-2xs uppercase">
-          {data.name}</CardDescription
-        >
-        <CardAction className="flex gap-2">
-          {
-            poke.types.map((type: { type: { name: string } }) => (
-              <Badge
-                className="text-xl p-4"
-                key={type.type.name}
-                style={{
-                  backgroundColor: getColorsByType(type.type.name),
-                }}
-              >
-                {type.type.name.toUpperCase()}
-              </Badge>
-            ))
-          }
-        </CardAction>
-      </CardHeader>
-      <CardContent className="flex justify-center">
-        {
-          data.sprites.front_default && (
-            <Image
-              loading={"eager"}
-              width={500}
-              height={500}
-              class={"-mt-40"}
-              src={
-                data.sprites.other?.["official-artwork"]?.front_default ||
-                data.sprites.front_default
-              }
-              alt={data.name}
-              style={{ viewTransitionName: `sprite-${data.name}` }}
-            />
-          )
-        }
-      </CardContent>
-    </Card>
-    <Card>
-      <CardHeader>
-        <CardTitle> Base Stats </CardTitle>
-        <CardDescription />
-        <CardAction className="flex gap-2">
-          <Button variant="outline">Add to Team</Button>
-        </CardAction>
-      </CardHeader>
-      <CardContent>
-        {
-          data.stats.map((stat, i) => (
-            <Field className="w-full mb-4 capitalize" key={i}>
-              <FieldLabel htmlFor="progress-upload">
-                <span>{stat.stat.name}</span>
-                <span class="ml-auto">{stat.base_stat}</span>
-              </FieldLabel>
-              <Progress
-                className={cn(
-                  "w-full ",
-                  stat.stat.name === "hp" && "bg-green-500",
-                  stat.stat.name === "attack" && "bg-red-500",
-                  stat.stat.name === "defense" && "bg-blue-500",
-                  stat.stat.name === "special-attack" && "bg-yellow-500",
-                  stat.stat.name === "special-defense" && "bg-purple-500",
-                  stat.stat.name === "speed" && "bg-pink-500",
-                )}
-                value={(stat.base_stat / 225) * 100}
-                id="progress-upload"
-              />
-            </Field>
-          ))
-        }
-      </CardContent>
-      <CardFooter>
-        <div class="flex justify-between w-full">
-          <div>
-            <strong>Height:</strong>
-            <p>
-              {poke.height}
-            </p>
-          </div>
-          <div>
-            <strong>Weight:</strong>
-            <p>
-              {poke.weight}
-            </p>
-          </div>
-        </div>
-      </CardFooter>
-    </Card>
-    <div class="col-span-2 flex gap-4">
-      <Card className="h-fit w-full">
+  <div class="flex flex-col my-20">
+    <a href="/pokedex">
+      <Button className="mb-4" variant={"blumine"}>
+        <ArrowLeft /> Go back
+      </Button>
+    </a>
+    <div class="grid grid-cols-3 w-full justify-between gap-4">
+      <Card
+        className={`col-span-2 text-white`}
+        style={{
+          background: `linear-gradient(135deg, ${getColorsByType(
+            poke.types[0].type.name,
+          )}, ${poke.types[1]?.type.name !== undefined ? getColorsByType(poke?.types[1]?.type.name) : "lightgray"})`,
+          borderColor: "lightgrey",
+        }}
+      >
         <CardHeader>
-          <CardTitle> Abilities </CardTitle>
+          <CardTitle className="text-8xl text-transparent text-shadow-2xs"
+            >#{data.id}</CardTitle
+          >
+          <CardDescription className="text-xl text-shadow-2xs uppercase">
+            {data.name}</CardDescription
+          >
+          <CardAction className="flex gap-2">
+            {
+              poke.types.map((type: { type: { name: string } }) => (
+                <Badge
+                  className="text-xl p-4"
+                  key={type.type.name}
+                  style={{
+                    backgroundColor: getColorsByType(type.type.name),
+                  }}
+                >
+                  {type.type.name.toUpperCase()}
+                </Badge>
+              ))
+            }
+          </CardAction>
+        </CardHeader>
+        <CardContent className="flex justify-center">
+          {
+            data.sprites.front_default && (
+              <Image
+                loading={"eager"}
+                width={500}
+                height={500}
+                class={"-mt-40"}
+                src={
+                  data.sprites.other?.["official-artwork"]?.front_default ||
+                  data.sprites.front_default
+                }
+                alt={data.name}
+                style={{ viewTransitionName: `sprite-${data.name}` }}
+              />
+            )
+          }
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle> Base Stats </CardTitle>
           <CardDescription />
-          <CardAction className="flex gap-2" />
+          <CardAction className="flex gap-2">
+            <Button variant="outline">Add to Team</Button>
+          </CardAction>
         </CardHeader>
         <CardContent>
           {
-            abilities.map((ability) => (
-              <div>
-                <Card className="border-none shadow-none mb-2 bg-accent">
-                  <CardHeader>
-                    <CardTitle className="text-gray-700 capitalize">
-                      {ability.name.split("-").join(" ")}
-                    </CardTitle>
-                    <CardDescription className="text-gray-500 line-clamp-2 hover:line-clamp-none transition-all">
-                      {ability.description}
-                    </CardDescription>
-                    <CardAction>
-                      {ability.is_hidden ? (
-                        <Badge variant={"outline"}>HIDDEN</Badge>
-                      ) : (
-                        ""
-                      )}
-                    </CardAction>
-                  </CardHeader>
-                </Card>
-              </div>
+            data.stats.map((stat, i) => (
+              <Field className="w-full mb-4 capitalize" key={i}>
+                <FieldLabel htmlFor="progress-upload">
+                  <span>{stat.stat.name}</span>
+                  <span class="ml-auto">{stat.base_stat}</span>
+                </FieldLabel>
+                <Progress
+                  className={cn(
+                    "w-full ",
+                    stat.stat.name === "hp" && "bg-green-500",
+                    stat.stat.name === "attack" && "bg-red-500",
+                    stat.stat.name === "defense" && "bg-blue-500",
+                    stat.stat.name === "special-attack" && "bg-yellow-500",
+                    stat.stat.name === "special-defense" && "bg-purple-500",
+                    stat.stat.name === "speed" && "bg-pink-500",
+                  )}
+                  value={(stat.base_stat / 225) * 100}
+                  id="progress-upload"
+                />
+              </Field>
             ))
           }
         </CardContent>
-        <CardFooter />
+        <CardFooter>
+          <div class="flex justify-between w-full">
+            <div>
+              <strong>Height:</strong>
+              <p>
+                {poke.height}
+              </p>
+            </div>
+            <div>
+              <strong>Weight:</strong>
+              <p>
+                {poke.weight}
+              </p>
+            </div>
+          </div>
+        </CardFooter>
       </Card>
+      <div class="col-span-2 flex gap-4">
+        <Card className="h-fit w-full">
+          <CardHeader>
+            <CardTitle> Abilities </CardTitle>
+            <CardDescription />
+            <CardAction className="flex gap-2" />
+          </CardHeader>
+          <CardContent>
+            {
+              abilities.map((ability) => (
+                <div>
+                  <Card className="border-none shadow-none mb-2 bg-accent">
+                    <CardHeader>
+                      <CardTitle className="text-gray-700 capitalize">
+                        {ability.name.split("-").join(" ")}
+                      </CardTitle>
+                      <CardDescription className="text-gray-500 line-clamp-2 hover:line-clamp-none transition-all">
+                        {ability.description}
+                      </CardDescription>
+                      <CardAction>
+                        {ability.is_hidden ? (
+                          <Badge variant={"outline"}>HIDDEN</Badge>
+                        ) : (
+                          ""
+                        )}
+                      </CardAction>
+                    </CardHeader>
+                  </Card>
+                </div>
+              ))
+            }
+          </CardContent>
+          <CardFooter />
+        </Card>
 
-      <Card className="h-fit w-full">
+        <Card className="h-fit w-full">
+          <CardHeader>
+            <CardTitle> Moves </CardTitle>
+            <CardDescription />
+            <CardAction className="flex gap-2" />
+          </CardHeader>
+          <CardContent>
+            {
+              moves.map((move) => (
+                <div>
+                  <Card className="border-none shadow-none mb-2 bg-accent">
+                    <CardHeader>
+                      <CardTitle className="text-gray-700 capitalize">
+                        {move.name.split("-").join(" ")}
+                      </CardTitle>
+                      <CardDescription className="text-gray-500 line-clamp-2 hover:line-clamp-none transition-all">
+                        {move.description}
+                      </CardDescription>
+                      <CardAction>{move.type}</CardAction>
+                    </CardHeader>
+                  </Card>
+                </div>
+              ))
+            }
+          </CardContent>
+          <CardFooter className="flex w-full justify-end">
+            <Button>
+              <a href="/moves"> See more... </a>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+
+      <Card className="">
         <CardHeader>
-          <CardTitle> Moves </CardTitle>
+          <CardTitle> Evolution Chain </CardTitle>
           <CardDescription />
-          <CardAction className="flex gap-2" />
+          <CardAction />
         </CardHeader>
         <CardContent>
-          {
-            moves.map((move) => (
-              <div>
-                <Card className="border-none shadow-none mb-2 bg-accent">
-                  <CardHeader>
-                    <CardTitle className="text-gray-700 capitalize">
-                      {move.name.split("-").join(" ")}
-                    </CardTitle>
-                    <CardDescription className="text-gray-500 line-clamp-2 hover:line-clamp-none transition-all">
-                      {move.description}
-                    </CardDescription>
-                    <CardAction>{move.type}</CardAction>
-                  </CardHeader>
-                </Card>
-              </div>
-            ))
-          }
+          <div class="flex flex-col items-center gap-4">
+            {
+              evolutions.map((name, index) => (
+                <>
+                  <a href={`/pokedex/${name}`} data-astro-prefetch>
+                    <div class="flex flex-col items-center">
+                      <Image
+                        loading={"eager"}
+                        height={200}
+                        width={200}
+                        alt={name}
+                        src={`https://img.pokemondb.net/artwork/${name}.jpg`}
+                      />
+                      <span class="text-sm capitalize">{name}</span>
+                    </div>
+                  </a>
+
+                  {index < evolutions.length - 1 && (
+                    <div class="flex flex-col">
+                      <span class="text-xl">↓</span>
+                    </div>
+                  )}
+                </>
+              ))
+            }
+          </div>
         </CardContent>
         <CardFooter />
       </Card>
     </div>
-
-    <Card className="">
-      <CardHeader>
-        <CardTitle> Evolution Chain </CardTitle>
-        <CardDescription />
-        <CardAction />
-      </CardHeader>
-      <CardContent>
-        <div class="flex flex-col items-center gap-4">
-          {
-            evolutions.map((name, index) => (
-              <>
-                <a href={`/pokedex/${name}`} data-astro-prefetch>
-                  <div class="flex flex-col items-center">
-                    <Image
-                      loading={"eager"}
-                      height={200}
-                      width={200}
-                      alt={name}
-                      src={`https://img.pokemondb.net/artwork/${name}.jpg`}
-                    />
-                    <span class="text-sm capitalize">{name}</span>
-                  </div>
-                </a>
-
-                {index < evolutions.length - 1 && (
-                  <div class="flex flex-col">
-                    <span class="text-xl">↓</span>
-                  </div>
-                )}
-              </>
-            ))
-          }
-        </div>
-      </CardContent>
-      <CardFooter />
-    </Card>
   </div>
 </Layout>

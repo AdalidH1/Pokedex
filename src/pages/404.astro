@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+---
+
+<Layout>
+  <div class="flex flex-col items-center justify-center h-screen">
+    <Image src="/404.svg" alt="" width={500} height={500} />
+    <p class="text-blumine">Oops! A wild pokemon has bloked your path.</p>
+    <p class="text-gray-700 dark:text-accent text-sm italic">
+      This page does not exist.
+    </p>
+    <a href="/pokedex">
+      <Button variant={"blumine"} className="mt-4">
+        <ArrowLeft /> Go back
+      </Button>
+    </a>
+  </div>
+</Layout>
