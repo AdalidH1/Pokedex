@@ -19,6 +19,7 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
+import DrawerComponent from "@/components/Drawer";
 
 export async function getStaticPaths() {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100000");
@@ -270,6 +271,7 @@ const evolutions = getAllEvolutions(evoData.chain);
             <Button>
               <a href="/moves"> See more... </a>
             </Button>
+            <DrawerComponent client:load />
           </CardFooter>
         </Card>
       </div>
