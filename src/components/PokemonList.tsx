@@ -162,7 +162,7 @@ export default function PokemonList() {
               <a href={`/pokedex/${poke.name}`} data-astro-prefetch>
                 <Card
                   key={poke.id}
-                  className={`w-full max-w-xs text-white hover:scale-[1.02] transition-all  shadow-lg hover:shadow-primary/50 `}
+                  className={`w-full max-w-xl text-white hover:scale-[1.02] transition-all  shadow-lg hover:shadow-primary/50 `}
                   style={{
                     background: `linear-gradient(135deg, ${getColorsByType(
                       poke.types[0].type.name,
